@@ -1,0 +1,113 @@
+C0CRXN12 ; COMPILED XREF FOR FILE #176.001 ; 08/23/15
+ ; 
+ S DIKZK=1
+ S DIKZ(0)=$G(^C0CRXN(176.001,DA,0))
+ S X=$P($G(DIKZ(0)),U,1)
+ I X'="" S ^C0CRXN(176.001,"B",$E(X,1,30),DA)=""
+ S X=$P($G(DIKZ(0)),U,2)
+ I X'="" S ^C0CRXN(176.001,"RXAUI",$E(X,1,30),DA)=""
+CR1 S DIXR=733
+ K X
+ S X(1)=$P(DIKZ(0),U,1)
+ S X(2)=$P(DIKZ(0),U,5)
+ S X(3)=$P(DIKZ(0),U,3)
+ S X(4)=$P(DIKZ(0),U,4)
+ S X=$G(X(1))
+ I $G(X(1))]"",$G(X(2))]"" D
+ . K X1,X2 M X1=X,X2=X
+ . N DIKXARR M DIKXARR=X S DIKCOND=1
+ . S X=X(3)="VANDF"&(X(4)="CD")
+ . S DIKCOND=$G(X) K X M X=DIKXARR
+ . Q:'DIKCOND
+ . S ^C0CRXN(176.001,"RXN2VUID",X(1),X(2),DA)=""
+CR2 S DIXR=734
+ K X
+ S DIKZ(0)=$G(^C0CRXN(176.001,DA,0))
+ S X(1)=$P(DIKZ(0),U,4)
+ S X(2)=$P(DIKZ(0),U,1)
+ S X=$G(X(1))
+ I $G(X(2))]"" D
+ . K X1,X2 M X1=X,X2=X
+ . N DIKXARR M DIKXARR=X S DIKCOND=1
+ . S X=(X(1)="SBD")
+ . S DIKCOND=$G(X) K X M X=DIKXARR
+ . Q:'DIKCOND
+ . S ^C0CRXN(176.001,"SBD",X(2),DA)=""
+CR3 S DIXR=735
+ K X
+ S DIKZ(0)=$G(^C0CRXN(176.001,DA,0))
+ S X(1)=$P(DIKZ(0),U,1)
+ S X(2)=$P(DIKZ(0),U,3)
+ S X(3)=$P(DIKZ(0),U,4)
+ S X=$G(X(1))
+ I $G(X(1))]"" D
+ . K X1,X2 M X1=X,X2=X
+ . N DIKXARR M DIKXARR=X S DIKCOND=1
+ . S X=X(2)="RXNORM"&(X(3)="SCD")
+ . S DIKCOND=$G(X) K X M X=DIKXARR
+ . Q:'DIKCOND
+ . S ^C0CRXN(176.001,"SCD",X(1),DA)=""
+CR4 S DIXR=736
+ K X
+ S DIKZ(0)=$G(^C0CRXN(176.001,DA,0))
+ S X(1)=$P(DIKZ(0),U,5)
+ S X(2)=$P(DIKZ(0),U,3)
+ S X(3)=$P(DIKZ(0),U,4)
+ S X=$G(X(1))
+ I $G(X(1))]"" D
+ . K X1,X2 M X1=X,X2=X
+ . N DIKXARR M DIKXARR=X S DIKCOND=1
+ . S X=X(2)="VANDF"&(X(3)="CD")
+ . S DIKCOND=$G(X) K X M X=DIKXARR
+ . Q:'DIKCOND
+ . S ^C0CRXN(176.001,"VUID",X(1),DA)=""
+CR5 S DIXR=1117
+ K X
+ S DIKZ(0)=$G(^C0CRXN(176.001,DA,0))
+ S X(1)=$P(DIKZ(0),U,1)
+ S X=$G(X(1))
+ I $G(X(1))]"" D
+ . K X1,X2 M X1=X,X2=X
+ . S ^C0CRXN(176.001,"B",X,DA)=""
+CR6 S DIXR=1118
+ K X
+ S DIKZ(0)=$G(^C0CRXN(176.001,DA,0))
+ S X(1)=$P(DIKZ(0),U,14)
+ S X=$G(X(1))
+ I $G(X(1))]"" D
+ . K X1,X2 M X1=X,X2=X
+ . S ^C0CRXN(176.001,"CODE",X,DA)=""
+CR7 S DIXR=1119
+ K X
+ S DIKZ(0)=$G(^C0CRXN(176.001,DA,0))
+ S X(1)=$P(DIKZ(0),U,12)
+ S X(2)=$P(DIKZ(0),U,13)
+ S X(3)=$P(DIKZ(0),U,14)
+ S X(4)=$P(DIKZ(0),U,1)
+ S X=$G(X(1))
+ I $G(X(1))]"",$G(X(2))]"",$G(X(3))]"" D
+ . K X1,X2 M X1=X,X2=X
+ . S ^C0CRXN(176.001,"STC",X(1),X(2),X(3),DA)=X(4)
+CR8 S DIXR=1120
+ K X
+ S DIKZ(0)=$G(^C0CRXN(176.001,DA,0))
+ S X=$P(DIKZ(0),U,15)
+ I $G(X)]"" S X=$$UP^XLFSTR(X)
+ S:$D(X)#2 X(1)=X
+ S X=$G(X(1))
+ I $G(X(1))]"" D
+ . K X1,X2 M X1=X,X2=X
+ . S ^C0CRXN(176.001,"STR",$E(X,1,30),DA)=""
+CR9 S DIXR=1121
+ K X
+ S DIKZ(0)=$G(^C0CRXN(176.001,DA,0))
+ S X(1)=$P(DIKZ(0),U,12)
+ S X(2)=$P(DIKZ(0),U,13)
+ S X(3)=$P(DIKZ(0),U,1)
+ S X(4)=$P(DIKZ(0),U,14)
+ S X=$G(X(1))
+ I $G(X(1))]"",$G(X(2))]"",$G(X(3))]"" D
+ . K X1,X2 M X1=X,X2=X
+ . S ^C0CRXN(176.001,"STX",X(1),X(2),X(3),DA)=X(4)
+CR10 K X
+END Q

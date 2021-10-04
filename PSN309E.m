@@ -1,0 +1,6 @@
+PSN309E	;BHM/DB-Environment Check for PMI data updates ; 04 Jan 2012  1:12 PM
+	;;4.0;NATIONAL DRUG FILE;**309**; 30 Oct 98;Build 54
+	;
+	I $D(DUZ)#2 N DIC,X,Y S DIC=200,DIC(0)="N",X="`"_DUZ D ^DIC I Y>0
+	E  W !,"You must be a valid user."
+	Q

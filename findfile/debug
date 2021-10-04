@@ -1,0 +1,13 @@
+#!/usr/bin/bash
+for afile in ../test*.m
+  do clear
+  echo $afile
+  cat $afile
+  echo ""
+  echo "----------"
+  echo ""
+  awk -f findfile.awk $afile
+  echo ""
+  echo "Press 'Enter' to contiue"
+  read
+done

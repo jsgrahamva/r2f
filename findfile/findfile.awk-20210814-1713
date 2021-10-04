@@ -1,0 +1,208 @@
+#
+# Associate files with routines
+#
+
+function printRoutinesAndFiles() {
+	for (routine in linesfound) {
+		for (linecnt in linesfound[routine]) { 
+			line = lines[routine][linecnt];
+			if (substr(line,2,1) == ";") {
+				continue
+			}
+			fnd  = index(line,"^DIE(");
+			if (fnd == 0) {
+				continue
+			}
+			fnd = fnd + 4;
+			if (substr(line,fnd-8,4) == "FILE") {
+				piecenum = 2
+			}
+			else {
+				if (substr(line,fnd-10,6) == "UPDATE") {
+					piecenum = 2
+				}
+				else {
+					if (substr(line,fnd-8,4) == "HELP") {
+						piecenum = 5
+					}
+					else {
+						piecenum = 0
+					}
+				}
+			}
+			if (piecenum == 0) {
+				continue
+			}
+			line = substr(line,fnd); 
+			n    = split(line,arr,",");
+			split(arr[piecenum],arr2,")"); 
+			var  = arr2[1]; 
+			gsub(/"/,"",var); 
+			len      = length(var);
+			linecnt2 = linecnt - 1;
+			line     = lines[routine][linecnt2]; 
+			while (line ~ /^( |\t)/) {
+				flg = 0;
+				if (substr(line,2,1) == ";") {
+					line = lines[routine][--linecnt2]
+					continue
+				}
+				# print "A: line = " line
+				fnd = index(line,"FDA^DILF(");
+				if (fnd > 0) {
+					# print "B: FDA^DILF - " line
+					# print "C: fnd = " fnd
+					line    = substr(line,fnd + 9);
+					split(line,arr,",");
+					split(arr[1],arr2,")");
+					filenum = arr2[1];
+					# print "D: filenum = " filenum
+					flg     = 1
+				}
+				else { 
+					fnd = index(line,var "("); 
+					if (fnd > 0) { 
+						line                 = substr(line,fnd + len + 1); 
+						split(line,arr,","); 
+						filenum              = arr[1]; 
+						flg                  = 1;
+						if (filenum == "") { 
+							print filename ": " FNR; 
+							print $0; 
+							exit 
+						}
+					}
+				}
+				if (flg == 1) {
+					if (filenum ~ /[A-Z]+/) {
+						getFilenumValue(routine,linecnt2,filenum)
+					}
+					else { 
+						rtnfile[routine][filenum] = ""; 
+						filenums[filenum]         = "" 
+					}
+				}
+				line = lines[routine][--linecnt2] 
+			} 
+		} 
+	}
+
+}
+
+function getFilenumValue(routine,linecnt2,var, linecnt3, fnd, i) {
+	# print "   getFilenumValue function"
+	# print "      routine  = " routine
+	# print "      linecnt2 = " linecnt2
+	# print "      DIE line = " lines[routine][linecnt2]
+	# print "      filenum  = " var
+	linecnt3 = linecnt2 - 1; 
+	len      = length(var) + 2;
+	# print "      E1: var  = " var
+	line     = lines[routine][linecnt3]; 
+	while (line ~ /^( |\t)/) { 
+		# print "      E2: line = " line
+		# print "      F: Starts with space/tab"
+		fnd = index(line,"S " var); # Find Set <var>
+		if (fnd > 0) {
+			#
+			# Make sure it's a set 
+			#
+			if (substr(line,fnd-1) ~ /[ |\t]/) {
+				# print "      G: It's a set"
+				# print "         fnd+len = " fnd+len
+				#
+				# make sure the rest of the line is 1." "1"="1." " 
+				#
+				if (substr(line,fnd+len) ~ /[ ]*=[ ]*/) {
+					line = substr(line,fnd+len); 
+					# print "      H: Checking rest of line - " line
+					fnd  = index(line,"="); 
+					line = substr(line,fnd+1);
+					# print "      H2: New line - " line
+					pos  = 0; 
+					for (i = 1; i<= length(line); i++) { 
+						if (substr(line,i,1) != " ") { 
+							pos = i;
+							break
+						} 
+					}
+					# print "      H3: i = " i ", pos = " pos
+					if (pos > 0) {
+						# print "      I: substr(line,pos) = " substr(line,pos)
+						split(substr(line,pos),arr," "); 
+						filenum = arr[1]; 
+						# print "      J: filenum = " filenum
+						if (filenum !~ /\$S/) {
+							# print "      K"
+							rtnfile[routine][filenum] = ""; 
+							filenums[filenum]         = "" 
+						}
+						else {
+							# print "      L"
+							filenum = substr(filenum,4,length(filenum)-4);
+							n       = split(filenum,arr,",");
+							for (i = 1; i <= n; i++) {
+								phrase                    = arr[i];
+								# print "         M: phrase = " phrase
+								split(phrase,arr2,":");
+								val                       = arr2[2];
+								gsub(/"/,"",val);
+								# print "         N: val    = " val
+								if (val != "") { 
+									rtnfile[routine][val] = ""; 
+									filenums[val]         = "" 
+								}
+							}
+						}
+					} 
+				} 
+			}
+		}
+		line = lines[routine][--linecnt3]
+	}
+
+}
+
+BEGIN {
+	filename = ""
+}
+
+(FNR == 1) {
+	if (filename != "") {
+		printRoutinesAndFiles()
+	}
+	filename = FILENAME;
+}
+
+{ 
+	lines[FILENAME][FNR] = $0; 
+	if (index($0,"^DIE(")) { linesfound[FILENAME][FNR] = 1 } 
+} 
+
+END {
+	printRoutinesAndFiles();
+	n1 = asorti(rtnfile,rtnfile2);
+	n2 = asorti(filenums,filenums2,"@ind_num_asc");
+	header = "Routines";
+	for (i = 1; i <= n2; i++) {
+		filenum            = filenums2[i];
+		header             = header "," filenum;
+		filenums3[filenum] = i
+	}
+	print header;
+	for (i = 1; i <= n1; i++) {
+		rtn  = rtnfile2[i];
+		data = rtn;
+		for (j = 1; j <= n2; j++) {
+			filenum    = filenums2[j];
+			filenumpos = filenums3[filenum];
+			if (filenum in rtnfile[rtn]) { 
+				data = data ",X"
+			}
+			else {
+				data = data ","
+			}
+		}
+		print data
+	}
+}

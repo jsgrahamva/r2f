@@ -1,0 +1,4 @@
+#!/usr/bin/bash
+# Get git decoration
+#
+git log --oneline --decorate --graph --all

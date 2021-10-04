@@ -1,0 +1,46 @@
+ISINCF01 ;ISI/NST - Add records to ISI FORM file ; 22 July 2016 3:59 PM
+ ;;1.0;ISI;**CF**;Mar 19, 2002;Build 28;May 01, 2013
+ ;;
+ Q
+ ;
+ ;*****  Add a new record to ISI FORM file (#9999910)
+ ;       
+ ; RPC:ISIN CREATE FORM
+ ; 
+ ; Input Parameters
+ ; ================
+ ; 
+ ; ISIPARAM("TITLE")
+ ; ISIPARAM("PAGES")
+ ; ISIPARAM("TYPE INDEX")
+ ; ISIPARAM("PROC/EVENT INDEX")
+ ; ISIPARAM("SPEC/SUBSPEC INDEX")
+ ; ISIPARAM("ORIGIN INDEX")
+ ; ISIPARAM("SIGN AGAIN")
+ ; ISIPARAM("TIU NOTE")
+ ; ISIPARAM("TIU STATUS")
+ ; ISIPARAM("LOCATION")
+ ; ISIPARAM("DESCRIPTIONnnn")
+ ; ISIPARAM("XMLnnn")
+ ; ISIPARAM("TIU NOTE TEXTnnn")
+ ; 
+ ; Return Values
+ ; =============
+ ; if error ISIRY = Failure status ^Error message^
+ ; if success ISIRY = Success status ^^IEN - IEN of the new record 
+ ; 
+ADDFORM(ISIRY,ISIPARAM) ; RPC [ISIN CREATE FORM]
+ N ISIWP,ISIFIELDS
+ K ISIRY
+ ;
+ S ISIFIELDS("XML")=""
+ S ISIFIELDS("DESCRIPTION")=""
+ S ISIFIELDS("TIU NOTE TEXT")=""
+ ;
+ D TRANS^ISINU005(.ISIWP,.ISIPARAM,.ISIFIELDS)  ; normalize WP paramaters
+ ;
+ S ISIPARAM("CREATED DATE/TIME")=$$NOW^XLFDT
+ S ISIPARAM("CREATED BY")=DUZ
+ S ISIPARAM("ACTIVE")=1
+ D ADDRCD^ISINU004(.ISIRY,9999910,.ISIPARAM,.ISIWP)
+ Q
